@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Reflection.Metadata;
 
 namespace Proyecto_Final_C_.Clases
 {
@@ -124,6 +125,53 @@ namespace Proyecto_Final_C_.Clases
                 connect.Close();
             }
             return usuario;
+        }
+        //public void ModificarUsuario(int IdACambiar, string NuevoNombre, String NuevoApellido, String NuevoNombreUsuario, String NuevaContraseña, String NuevoMail)
+        public void ModificarUsuario(Usuario usuario)
+        {
+            //Método que recibe como parámetro un id de un usuario y se modifican todos sus según datos ingresado.
+
+            SqlConnectionStringBuilder connectionBuilder = new();
+            connectionBuilder.DataSource = "LAPTOP-JBSHHD62";
+            connectionBuilder.InitialCatalog = "SistemaGestion";
+            connectionBuilder.IntegratedSecurity = true;
+
+            var connectionString = connectionBuilder.ConnectionString;
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+
+                SqlCommand cmd = connect.CreateCommand();
+                cmd.CommandText = "UPDATE Usuario SET Nombre=@Nombre, Apellido=@Apellido, NombreUsuario=@NombreUsuario, Contraseña=@Contraseña, Mail=@Mail WHERE Id = @Id";
+                
+                var paramId = new SqlParameter("Id", System.Data.SqlDbType.Int);
+                paramId.Value = usuario.Id;
+                cmd.Parameters.Add(paramId);
+
+                var paramNombre = new SqlParameter("Nombre", System.Data.SqlDbType.VarChar);
+                paramNombre.Value = usuario.Nombre;
+                cmd.Parameters.Add(paramNombre);
+
+                var paramApellido = new SqlParameter("Apellido", System.Data.SqlDbType.VarChar);
+                paramApellido.Value = usuario.Apellido;
+                cmd.Parameters.Add(paramApellido);
+
+                var paramNombreUsuario = new SqlParameter("NombreUsuario", System.Data.SqlDbType.VarChar);
+                paramNombreUsuario.Value = usuario.NombreUsuario;
+                cmd.Parameters.Add(paramNombreUsuario);
+
+                var paramContraseña = new SqlParameter("Contraseña", System.Data.SqlDbType.VarChar);
+                paramContraseña.Value = usuario.Contraseña;
+                cmd.Parameters.Add(paramContraseña);
+
+                var paramMail = new SqlParameter("Mail", System.Data.SqlDbType.VarChar);
+                paramMail.Value = usuario.Mail;
+                cmd.Parameters.Add(paramMail);
+
+                cmd.ExecuteNonQuery();
+                connect.Close();
+            }
         }
     }
 }
