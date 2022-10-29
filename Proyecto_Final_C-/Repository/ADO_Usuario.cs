@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using System.Linq.Expressions;
 using WebApplicationDePrueba2.Models;
 using static WebApplicationDePrueba2.Controllers.UsuarioController;
 
@@ -134,6 +135,84 @@ namespace WebApplicationDePrueba2.Repository
                 var paramMail = new SqlParameter("Mail", System.Data.SqlDbType.VarChar);
                 paramMail.Value = usuario.Mail;
                 cmd.Parameters.Add(paramMail);
+
+                cmd.ExecuteNonQuery();
+                connect.Close();
+            }
+        }
+        public static void CrearUsuario(Usuario usuario)
+        {
+            //Método que recibe como parámetro un JSON con todos los datos cargados y da un alta
+            //inmediata del usuario con los mismos validando que todos los datos obligatorios estén cargados,
+            //por el contrario devolverá error.
+
+            SqlConnectionStringBuilder connectionBuilder = new();
+            connectionBuilder.DataSource = "LAPTOP-JBSHHD62";
+            connectionBuilder.InitialCatalog = "SistemaGestion";
+            connectionBuilder.IntegratedSecurity = true;
+
+            var connectionString = connectionBuilder.ConnectionString;
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                
+                Usuario existeUsuario = TraerUsuario(usuario.NombreUsuario);
+                if (existeUsuario.NombreUsuario == "")
+                {
+                    SqlCommand cmd = connect.CreateCommand();
+                    cmd.CommandText = "INSERT INTO Usuario VALUES (@Nombre,@Apellido,@NombreUsuario,@Contraseña,@Mail)";
+
+                    var paramNombre = new SqlParameter("Nombre", System.Data.SqlDbType.VarChar);
+                    paramNombre.Value = usuario.Nombre;
+                    cmd.Parameters.Add(paramNombre);
+
+                    var paramApellido = new SqlParameter("Apellido", System.Data.SqlDbType.VarChar);
+                    paramApellido.Value = usuario.Apellido;
+                    cmd.Parameters.Add(paramApellido);
+
+                    var paramNombreUsuario = new SqlParameter("NombreUsuario", System.Data.SqlDbType.VarChar);
+                    paramNombreUsuario.Value = usuario.NombreUsuario;
+                    cmd.Parameters.Add(paramNombreUsuario);
+
+                    var paramContraseña = new SqlParameter("Contraseña", System.Data.SqlDbType.VarChar);
+                    paramContraseña.Value = usuario.Contraseña;
+                    cmd.Parameters.Add(paramContraseña);
+
+                    var paramMail = new SqlParameter("Mail", System.Data.SqlDbType.VarChar);
+                    paramMail.Value = usuario.Mail;
+                    cmd.Parameters.Add(paramMail);
+
+                    cmd.ExecuteNonQuery();
+                }
+                else
+                {
+                    
+                }
+                connect.Close();
+            }
+        }
+        public static void EliminarUsuario(int id)
+        {
+            //Recibe el ID del usuario a eliminar y lo elimina de la base de datos.
+
+            SqlConnectionStringBuilder connectionBuilder = new();
+            connectionBuilder.DataSource = "LAPTOP-JBSHHD62";
+            connectionBuilder.InitialCatalog = "SistemaGestion";
+            connectionBuilder.IntegratedSecurity = true;
+
+            var connectionString = connectionBuilder.ConnectionString;
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+
+                SqlCommand cmd = connect.CreateCommand();
+                cmd.CommandText = "DELETE FROM ProductoVendido WHERE IdProducto IN (SELECT Id FROM Producto WHERE IdUsuario = @Id) OR IdVenta IN (SELECT Id FROM Venta WHERE IdUsuario = @Id) DELETE FROM Producto WHERE IdUsuario = @Id DELETE FROM Venta WHERE IdUsuario = @Id DELETE FROM Usuario WHERE Id = @Id";
+
+                var paramId = new SqlParameter("Id", System.Data.SqlDbType.Int);
+                paramId.Value = id;
+                cmd.Parameters.Add(paramId);
 
                 cmd.ExecuteNonQuery();
                 connect.Close();

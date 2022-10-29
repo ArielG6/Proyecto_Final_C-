@@ -7,51 +7,6 @@ namespace WebApplicationDePrueba2.Repository
 {
     public class ADO_Venta
     {
-        public static List<Venta> TraerVentas(int IdUsuarioBuscar)
-        {
-            //Método que recibe un número de IdUsuario como parámetro y
-            //trae todas las ventas de la base asignados a este usuario en particular.
-
-            var listaVentas = new List<Venta>();
-
-            SqlConnectionStringBuilder connectionBuilder = new();
-            connectionBuilder.DataSource = "LAPTOP-JBSHHD62";
-            connectionBuilder.InitialCatalog = "SistemaGestion";
-            connectionBuilder.IntegratedSecurity = true;
-
-            var connectionString = connectionBuilder.ConnectionString;
-
-            using (SqlConnection connect = new SqlConnection(connectionString))
-            {
-                connect.Open();
-
-                SqlCommand cmd = connect.CreateCommand();
-                cmd.CommandText = "SELECT * FROM Venta WHERE IdUsuario = @idUsu";
-                var parametro = new SqlParameter("idUsu", System.Data.SqlDbType.Int);
-                parametro.Value = IdUsuarioBuscar;
-                cmd.Parameters.Add(parametro);
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        Venta venta = new Venta();
-
-                        venta.Id = Convert.ToInt32(dr.GetValue(0));
-                        venta.Comentarios = dr.GetString(1).ToString();
-                        venta.IdUsuario = Convert.ToInt32(dr.GetValue(2));
-
-                        listaVentas.Add(venta);
-
-                    }
-                    dr.Close();
-                }
-
-                connect.Close();
-            }
-
-            return listaVentas;
-        }
         public static void CargarVenta(List<Producto> listaProductos, int IdUsuarioVendedor)
         {
             //Método que recibe una lista de productos y el número de IdUsuario de quien la efectuó,
@@ -125,6 +80,129 @@ namespace WebApplicationDePrueba2.Repository
                 }
                 connect.Close();
             }
+        }
+        public static void EliminarVenta(int IdVenta)
+        {
+            //Método que recibe una venta con su número de Id, busca en la base de Productos
+            //Vendidos cuáles lo tienen eliminándolos, suma el stock a los productos incluidos,
+            //y elimina la venta de la base de datos.
+
+            SqlConnectionStringBuilder connectionBuilder = new();
+            connectionBuilder.DataSource = "LAPTOP-JBSHHD62";
+            connectionBuilder.InitialCatalog = "SistemaGestion";
+            connectionBuilder.IntegratedSecurity = true;
+
+            var connectionString = connectionBuilder.ConnectionString;
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+
+                SqlCommand cmd = connect.CreateCommand();
+                cmd.CommandText = "UPDATE Producto SET Stock = Stock + (SELECT Stock FROM ProductoVendido WHERE IdVenta = @IdVenta) WHERE Id = (SELECT IdProducto FROM ProductoVendido WHERE IdVenta = @IdVenta)";
+
+                var paramId = new SqlParameter("IdVenta", System.Data.SqlDbType.Int);
+                paramId.Value = IdVenta;
+                cmd.Parameters.Add(paramId);
+
+                cmd.ExecuteNonQuery();
+
+                cmd.CommandText = "DELETE FROM ProductoVendido WHERE IdVenta = @IdVenta";
+
+                cmd.ExecuteNonQuery();
+
+                cmd.CommandText = "DELETE FROM Venta WHERE Id = @IdVenta";
+
+                cmd.ExecuteNonQuery();
+            
+                connect.Close();
+            }
+        }
+        public static List<Venta> TraerVentas()
+        {
+            //Método que trae todas las ventas de la base, incluyendo sus Productos.
+
+            var listaVentas = new List<Venta>();
+
+            SqlConnectionStringBuilder connectionBuilder = new();
+            connectionBuilder.DataSource = "LAPTOP-JBSHHD62";
+            connectionBuilder.InitialCatalog = "SistemaGestion";
+            connectionBuilder.IntegratedSecurity = true;
+
+            var connectionString = connectionBuilder.ConnectionString;
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+
+                SqlCommand cmd = connect.CreateCommand();
+                cmd.CommandText = "SELECT * FROM Venta";
+                
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        Venta venta = new Venta();
+
+                        venta.Id = Convert.ToInt32(dr.GetValue(0));
+                        venta.Comentarios = dr.GetString(1).ToString();
+                        venta.IdUsuario = Convert.ToInt32(dr.GetValue(2));
+
+                        listaVentas.Add(venta);
+
+                    }
+                    dr.Close();
+                }
+
+                connect.Close();
+            }
+
+            return listaVentas;
+        }
+        public static List<Venta> TraerVentasUsuario(int IdUsuarioBuscar)
+        {
+            //Método que recibe un número de IdUsuario como parámetro y
+            //trae todas las ventas de la base asignados a este usuario en particular.
+
+            var listaVentas = new List<Venta>();
+
+            SqlConnectionStringBuilder connectionBuilder = new();
+            connectionBuilder.DataSource = "LAPTOP-JBSHHD62";
+            connectionBuilder.InitialCatalog = "SistemaGestion";
+            connectionBuilder.IntegratedSecurity = true;
+
+            var connectionString = connectionBuilder.ConnectionString;
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+
+                SqlCommand cmd = connect.CreateCommand();
+                cmd.CommandText = "SELECT * FROM Venta WHERE IdUsuario = @idUsu";
+                var parametro = new SqlParameter("idUsu", System.Data.SqlDbType.Int);
+                parametro.Value = IdUsuarioBuscar;
+                cmd.Parameters.Add(parametro);
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        Venta venta = new Venta();
+
+                        venta.Id = Convert.ToInt32(dr.GetValue(0));
+                        venta.Comentarios = dr.GetString(1).ToString();
+                        venta.IdUsuario = Convert.ToInt32(dr.GetValue(2));
+
+                        listaVentas.Add(venta);
+
+                    }
+                    dr.Close();
+                }
+
+                connect.Close();
+            }
+
+            return listaVentas;
         }
     }
 }

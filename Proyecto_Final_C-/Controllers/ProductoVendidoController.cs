@@ -9,10 +9,10 @@ namespace WebApplicationDePrueba2.Controllers
     [ApiController]
     public class ProductoVendidoController : ControllerBase
     {
-        [HttpGet(Name = "TraerProductosVendidos")]
-        public List<ProductoVendido> Get()
+        [HttpGet("TraerProductosVendidos")]
+        public List<ProductoVendido> Get(int id)
         {
-            return ADO_ProductoVendido.TraerProductosVendidos(1);
+            return ADO_ProductoVendido.TraerProductosVendidos(id);
         }
     }
 }

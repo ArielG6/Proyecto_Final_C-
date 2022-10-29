@@ -10,15 +10,25 @@ namespace WebApplicationDePrueba2.Controllers
     [ApiController]
     public class VentaController : ControllerBase
     {
-        [HttpGet(Name = "TraerVentas")]
-        public List<Venta> Get([FromQuery] int id)
-        {
-            return ADO_Venta.TraerVentas(id);
-        }
-        [HttpPost(Name = "CargarVenta")]
+        [HttpPost("CargarVenta")]
         public void CargarVenta([FromBody] List<Producto> listaProductos, [FromQuery] int IdUsuarioVendedor)
         {
             ADO_Venta.CargarVenta(listaProductos, IdUsuarioVendedor);
+        }
+        [HttpDelete("EliminarVenta")]
+        public void ElminarVenta([FromQuery] int id)
+        {
+            ADO_Venta.EliminarVenta(id);
+        }
+        [HttpGet("TraerVentas")]
+        public List<Venta> TraerVentas()
+        {
+            return ADO_Venta.TraerVentas();
+        }
+        [HttpGet("TraerVentasUsuario")]
+        public List<Venta> TraerVentasUsuario(int id)
+        {
+            return ADO_Venta.TraerVentasUsuario(id);
         }
     }
 }

@@ -31,3 +31,6 @@ C:\Users\ariel\OneDrive\Documentos\CoderHouse\Proyecto_Final_C-\Proyecto_Final_C
 C:\Users\ariel\OneDrive\Documentos\CoderHouse\Proyecto_Final_C-\Proyecto_Final_C-\obj\Debug\net6.0\Proyecto_Final_C_Desafio.pdb
 C:\Users\ariel\OneDrive\Documentos\CoderHouse\Proyecto_Final_C-\Proyecto_Final_C-\obj\Debug\net6.0\Proyecto_Final_C_Desafio.genruntimeconfig.cache
 C:\Users\ariel\OneDrive\Documentos\CoderHouse\Proyecto_Final_C-\Proyecto_Final_C-\obj\Debug\net6.0\ref\Proyecto_Final_C_Desafio.dll
+C:\Users\ariel\OneDrive\Documentos\CoderHouse\Proyecto_Final_C-\Proyecto_Final_C-\bin\Debug\net6.0\Microsoft.AspNetCore.Connections.Abstractions.dll
+C:\Users\ariel\OneDrive\Documentos\CoderHouse\Proyecto_Final_C-\Proyecto_Final_C-\bin\Debug\net6.0\Microsoft.Extensions.Features.dll
+C:\Users\ariel\OneDrive\Documentos\CoderHouse\Proyecto_Final_C-\Proyecto_Final_C-\bin\Debug\net6.0\System.IO.Pipelines.dll
